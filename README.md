@@ -1,7 +1,16 @@
-# caelestia
+# caelestia (Fedora edition)
 
 This is the main repo of the caelestia dots and contains the user configs for
 apps. This repo also includes an install script to install the entire dots.
+
+> [!NOTE]
+> This is a community **Fedora fork** of
+> [`caelestia-dots/caelestia`](https://github.com/caelestia-dots/caelestia).
+> Upstream targets Arch Linux only (AUR metapackage + `install.fish`). This
+> fork adds [`install-fedora.sh`](install-fedora.sh) — a `dnf`/COPR port of
+> the installer — plus a [Fedora dependency map](docs/FEDORA.md), while keeping
+> the upstream Arch path untouched. See [Fedora installation](#fedora-installation)
+> below. Public and free under the same GPL-3.0 license as upstream.
 
 ## Installation
 
@@ -37,6 +46,53 @@ For example:
 git clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia
 ~/.local/share/caelestia/install.fish
 ```
+
+### Fedora installation
+
+Caelestia has no native Fedora package. Use the bundled `dnf`/COPR port:
+
+```sh
+git clone https://github.com/YaxOFF/caelestia-fedora.git ~/.local/share/caelestia
+cd ~/.local/share/caelestia
+./install-fedora.sh
+```
+
+What it does:
+
+1.  Enables RPM Fusion and the required COPRs
+    (`sdegler/hyprland` for Hyprland/hyprpicker, `errornointernet/quickshell`
+    for Quickshell).
+2.  Installs the dependency set via `dnf` (mapped from the upstream
+    `caelestia-meta` PKGBUILD — see [docs/FEDORA.md](docs/FEDORA.md)).
+3.  Builds `caelestia-cli` (pip, into `~/.local`) and installs
+    `caelestia-shell` (Quickshell config) from source, since neither is
+    packaged for Fedora.
+4.  Pulls the few items Fedora does not package — JetBrains Mono Nerd Font and
+    `app2unit` — into `~/.local`.
+5.  Symlinks the same config set as the Arch installer (`hypr`, `foot`, `fish`,
+    `fastfetch`, `uwsm`, `btop`, `starship.toml`).
+
+```
+$ ./install-fedora.sh -h
+usage: ./install-fedora.sh [-h] [--noconfirm] [--no-copr] [--no-build] [--configs-only]
+
+options:
+  -h, --help        show this help message and exit
+  --noconfirm       pass -y to dnf and never prompt before overwriting configs
+  --no-copr         skip enabling COPR/RPM Fusion repos (assume already set up)
+  --no-build        skip building caelestia-cli / caelestia-shell from source
+  --configs-only    only symlink the configs (no package install, no build)
+```
+
+> [!WARNING]
+> Like the Arch installer, this symlinks configs into place — do not move or
+> delete the repo folder afterwards, or Hyprland will fail to start. Clone to a
+> stable location such as `~/.local/share/caelestia`.
+
+> [!NOTE]
+> Tested on Fedora 43 with Hyprland from the `sdegler/hyprland` COPR. Package
+> availability in COPRs can change; the script installs packages one-by-one and
+> reports anything it could not pull so you can grab it manually.
 
 ### Manual installation
 
